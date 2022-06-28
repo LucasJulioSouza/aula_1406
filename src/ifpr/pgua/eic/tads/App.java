@@ -21,7 +21,7 @@ public class App {
 
     }
 
-    public static String menuBanco(){
+    public static String menuBanco() {
         String str = "";
 
         str += "1 - Listar as pessoas\n";
@@ -53,6 +53,40 @@ public class App {
 
     }
 
+    public static boolean verificaConta(int conta, ArrayList<Integer> verificaConta, Scanner scan) {
+
+        Boolean erro = false;
+
+        for (int i = 0; i < verificaConta.size(); i++) {
+            if (conta == verificaConta.get(i)) {
+                erro = true;
+            } else {
+                erro = false;
+            }
+        }
+
+        return erro;
+
+    }
+
+  
+
+    public static boolean verificaCpf(String cpf, ArrayList<String> verificaCpf, Scanner scan) {
+
+        Boolean erro = false;
+
+        for (int i = 0; i < verificaCpf.size(); i++) {
+            if (cpf.equals(verificaCpf.get(i))) {
+                erro = true;
+            } else {
+                erro = false;
+            }
+        }
+
+        return erro;
+
+    }
+
     public static void main(String[] args) throws Exception {
         ContaCorrente conta = null;
         Pessoa pessoa = null;
@@ -63,11 +97,14 @@ public class App {
 
         int numeroDaConta;
         int agencia;
+
         String documento;
         String senha;
         boolean ativa;
         double saldo, valor;
-
+        ArrayList<Integer> verificaConta = new ArrayList<>();
+        ArrayList<Integer> verificaAgencia = new ArrayList<>();
+        ArrayList<String> verificaCpf = new ArrayList<String>();
         String nome, cpf;
         int idade;
         double salario;
@@ -76,7 +113,7 @@ public class App {
             System.out.println(menuGeral());
             opcao = scan.nextInt();
             scan.nextLine();
-            if (opcao == 2) { //Menu da pessoa
+            if (opcao == 2) { // Menu da pessoa
                 System.out.println(menuPessoa());
                 opcao = scan.nextInt();
                 scan.nextLine();
@@ -85,7 +122,19 @@ public class App {
                         System.out.println("Digite o nome:");
                         nome = scan.nextLine();
                         System.out.println("Digite o cpf:");
-                        cpf = scan.nextLine();
+                        cpf = scan.next();
+
+                        while (verificaCpf(cpf, verificaCpf, scan)) {
+
+                            System.out.println("Este numero de CPF ja é existente!!!");
+                            System.out.print("Digite outro CPF:");
+                            cpf = scan.next();
+
+                        }
+
+                        verificaCpf.add(cpf);
+                        scan.nextLine();
+
                         System.out.println("Digite a idade:");
                         idade = scan.nextInt();
                         System.out.println("Digite o salario:");
@@ -105,7 +154,7 @@ public class App {
                         }
                         break;
                 }
-            } else if(opcao == 1){
+            } else if (opcao == 1) {
 
                 System.out.println(menuConta());
                 opcao = scan.nextInt();
@@ -117,9 +166,30 @@ public class App {
 
                             System.out.println("Digite o número da conta:");
                             numeroDaConta = scan.nextInt();
+
+                            while (verificaConta(numeroDaConta, verificaConta, scan)) {
+
+                                System.out.println("Este numero de conta ja é existente!!!");
+                                System.out.print("Digite outro numero da conta:");
+                                numeroDaConta = scan.nextInt();
+
+                            }
+
+                            verificaConta.add(numeroDaConta);
                             scan.nextLine();
+
                             System.out.println("Digite a agência:");
                             agencia = scan.nextInt();
+
+                            while (verificaConta(agencia, verificaAgencia, scan)) {
+
+                                System.out.println("Este numero de agencia ja é existente!!!");
+                                System.out.print("Digite outro numero da agencia:");
+                                agencia = scan.nextInt();
+
+                            }
+
+                            verificaAgencia.add(agencia);
                             scan.nextLine();
                             System.out.println("Digite a senha:");
                             senha = scan.nextLine();
@@ -131,7 +201,16 @@ public class App {
                             if (opcao == 1) {
                                 System.out.println("Digite o saldo:");
                                 saldo = scan.nextDouble();
-                                conta = new ContaCorrente(numeroDaConta, agencia, pessoa, senha, ativa, saldo);
+
+                                for (int i = 0; i < banco.getPessoas().size(); i++) {
+
+                                    System.out.println("\n" + "|" + i + "-" + banco.getPessoas().get(i) + "\n");
+                                }
+                                System.out.print("Indique o titular da conta:");
+                                int selecaoPessoa = scan.nextInt();
+
+                                conta = new ContaCorrente(numeroDaConta, agencia, banco.getPessoas().get(selecaoPessoa),
+                                        senha, ativa, saldo);
 
                             } else {
                                 conta = new ContaCorrente(numeroDaConta, agencia, pessoa, senha, ativa);
@@ -140,7 +219,7 @@ public class App {
                             pessoa.setContaCorrente(conta);
                             banco.cadastarConta(conta);
                             System.out.println("Conta criada!!");
-                        }else{
+                        } else {
                             System.out.println("Necessário uma pessoa!");
                         }
                         break;
@@ -185,25 +264,25 @@ public class App {
 
                         break;
                 }
-            }else if(opcao == 3){
+            } else if (opcao == 3) {
                 System.out.println(menuBanco());
                 opcao = scan.nextInt();
-                switch(opcao){
+                switch (opcao) {
                     case 1:
                         System.out.println("Listar pessoas!");
                         ArrayList<Pessoa> lista = banco.getPessoas();
-                        for(int i=0;i<lista.size();i++){
+                        for (int i = 0; i < lista.size(); i++) {
                             System.out.println(lista.get(i));
                         }
-                    break;
+                        break;
                     case 2:
                         System.out.println("Listar contas!");
-                        ContaCorrente[] contas = banco.getContaCorrentes();
-                        for(int i=0;i<contas.length;i++){
-                            System.out.println(contas[i]);
+                        ArrayList<ContaCorrente> contas = banco.getContaCorrentes();
+                        for (int i = 0; i < contas.size(); i++) {
+                            System.out.println(contas.get(i));
                         }
-                    break;
-                }   
+                        break;
+                }
             }
 
         } while (opcao != 0);

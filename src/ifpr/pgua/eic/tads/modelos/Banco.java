@@ -8,7 +8,7 @@ public class Banco {
     private String telefone;
     private String cnpj;
     private ArrayList<Pessoa> pessoas;
-    private ContaCorrente[] contaCorrentes;
+    private ArrayList<ContaCorrente> contaCorrentes;
     private int qtdePessoas;
     private int qtdeContas;
   
@@ -19,7 +19,7 @@ public class Banco {
         this.cnpj = cnpj;
         pessoas = new ArrayList<Pessoa>();
         qtdePessoas = 0;
-        contaCorrentes = new ContaCorrente[5];
+        contaCorrentes = new ArrayList<ContaCorrente>();
         qtdeContas = 0;
 
     }
@@ -35,11 +35,12 @@ public class Banco {
     }
 
     public void cadastarConta(ContaCorrente conta){
-        this.contaCorrentes[qtdeContas] = conta;
-        qtdeContas += 1;
+        this.contaCorrentes.add(conta);
+
+
     }
 
-    public ContaCorrente[] getContaCorrentes(){
+    public ArrayList<ContaCorrente> getContaCorrentes(){
         return contaCorrentes;
     }
  
